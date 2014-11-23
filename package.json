@@ -1,0 +1,19 @@
+{
+  "name": "jake-tools",
+  "version": "0.0.1",
+  "description": "Web-App Build tools for jake task runner",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ondrej Brinkel <info@anzui.de>",
+  "license": "MIT",
+  "dependencies": {
+    "browserify": "^6.3.2",
+    "exorcist": "^0.1.6",
+    "gaze": "^0.6.4",
+    "jake": "^8.0.10",
+    "less": "^2.0.0",
+    "watchify": "^2.1.1"
+  }
+}
