@@ -1,11 +1,11 @@
 # General purpose Jake tools
 
-This is a collection of general purpose tools for the [Jake task runner](http://jakejs.com/).
+This is a collection of web(app) utilities for the [Jake task runner](http://jakejs.com/).
 
 ## Usage
 
 ```javascript
-var tools = require('jake-tools');
+var wu = require('jake-web-utils');
 
 /**
  * Compiles less files to css
@@ -19,7 +19,7 @@ var tools = require('jake-tools');
  * - String dest - Destination directory
  * - Boolean debug - if true source maps will be generated
  */
-tools.compileLess(options, cb)
+wu.compileLess(options, cb)
 
 
 /**
@@ -28,7 +28,7 @@ tools.compileLess(options, cb)
  *
  * See compileLess for available Options
  */
-tools.watchLess(options)
+wu.watchLess(options)
 
 
 /**
@@ -45,7 +45,7 @@ tools.watchLess(options)
  * - Boolean debug - if true source maps will be created
  * - String baseDir - baseDir as in browserify options
  */
-tools.compileBrowserify(options, cb)
+wu.compileBrowserify(options, cb)
 
 
 /**
@@ -54,5 +54,5 @@ tools.compileBrowserify(options, cb)
  *
  * See compileBrowserify for available Options
  */
-tools.watchBrowserify(options)
+wu.watchBrowserify(options)
 ```
