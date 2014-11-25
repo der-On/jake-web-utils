@@ -11,6 +11,18 @@ var watchify = require('watchify');
 
 function noop() {}
 
+/**
+ * Compiles less files to css
+ *
+ * @param Object options
+ * @param Function cb
+ *
+ * Options:
+ *
+ * - Array src - List of glob patterns for source files
+ * - String dest - Destination directory
+ * - Boolean debug - if true source maps will be generated
+ */
 function compileLess(options, cb)
 {
   cb = cb || noop;
@@ -81,6 +93,12 @@ function compileLess(options, cb)
 }
 module.exports.compileLess = compileLess;
 
+/**
+ * Watches and recompiles less files
+ * @param Object options
+ *
+ * See compileLess for available Options
+ */
 function watchLess(options)
 {
   var g = new gaze(options.src);
@@ -156,6 +174,20 @@ function createBrowserifyBundles(options)
   return bundles;
 }
 
+/**
+ * Compiles javascript with browserify
+ * @param Object options
+ * @param Function cb
+ *
+ * Options:
+ *
+ * - Array src - List of glob patterns for source files
+ * - String dest - Destination file
+ * - Array vendorSrc - List of glob pattern for source files of vendor modules
+ * - String vendorDest - Destination file for compiled vendors
+ * - Boolean debug - if true source maps will be created
+ * - String baseDir - baseDir as in browserify options
+ */
 function compileBrowserify(options, cb)
 {
   var bundles = createBrowserifyBundles(options);
@@ -175,6 +207,12 @@ function compileBrowserify(options, cb)
 }
 module.exports.compileBrowserify = compileBrowserify;
 
+/**
+ * Watches javascript files and compiles them with browserify
+ * @param options
+ *
+ * See compileBrowserify for available Options
+ */
 function watchBrowserify(options)
 {
   var bundles = createBrowserifyBundles(options);
