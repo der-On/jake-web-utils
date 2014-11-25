@@ -1,4 +1,4 @@
-# General purpose Jake tools
+# Webb(App) utilities Jake
 
 This is a collection of web(app) utilities for the [Jake task runner](http://jakejs.com/).
 
