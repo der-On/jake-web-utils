@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var less = require('less');
+var stylus = require('stylus');
 var jake = require('jake');
 var exorcist = require('exorcist');
 var stream = require('stream');
@@ -111,7 +112,107 @@ function watchLess(options)
 }
 module.exports.watchLess = watchLess;
 
-function noop() {}
+/**
+ * Compiles Stylus files to css
+ *
+ * @param Object options
+ * @param Function cb
+ *
+ * Options:
+ *
+ * - Array src - List of glob patterns for source files
+ * - String dest - Destination directory
+ * - Boolean debug - if true source maps will be generated
+ * - plugins - list of plugins to use (plugin constructors must be insterted executed here)
+ */
+function compileStylus(options, cb)
+{
+  cb = cb || noop;
+  var src = options.src;
+  var dest = options.dest;
+  var plugins = options.plugins || [];
+
+  var lessFiles = new jake.FileList();
+  lessFiles.include(src);
+
+  var done = 0;
+
+  lessFiles.toArray().forEach(function(file) {
+    var destFile = path.join(dest, path.basename(file).replace('.styl', '.css'));
+
+    // remove existing css
+    jake.rmRf(destFile, {silent: true});
+
+    console.log('Writing css to ' + destFile);
+    var s = stylus(fs.readFileSync(file, 'utf8'));
+    plugins.forEach(function(plugin) {
+      s.use(plugin);
+    });
+
+    s.render(
+      onRendered.bind(null, destFile)
+    );
+  });
+
+  function onRendered(dest, error, css) {
+    if (error) {
+      console.error(error);
+      onDone();
+    }
+    else {
+      if (!options.debug) {
+        fs.writeFile(dest, css.css, 'utf8', onDone);
+        return;
+      }
+
+      var s = new stream.Readable();
+      s._read = noop;
+      s.push(css.css);
+      s.push(null);
+
+      var smap = new stream.Duplex();
+
+      smap._write = function(data) {
+        smap.push(data.toString().replace(new RegExp("\/\/# sourceMappingURL=(.*)?"), '/*# sourceMappingURL=$1*/'));
+        smap.push(null);
+      };
+      smap._read = noop;
+
+      s.pipe(exorcist(dest + '.map'))
+          .pipe(smap)
+          .pipe(fs.createWriteStream(dest, 'utf8'))
+          .on('finish', onDone);
+    }
+  }
+
+  function onDone()
+  {
+    done++;
+
+    if (done === lessFiles.length) {
+      cb(null);
+    }
+  }
+}
+module.exports.compileStylus = compileStylus;
+
+/**
+ * Watches and recompiles Stylus files
+ * @param Object options
+ *
+ * See compileStylus for available Options
+ */
+function watchStylus(options)
+{
+  var g = new gaze(options.src);
+  g.on('all', cb);
+  cb();
+
+  function cb() {
+    compileStylus(options);
+  }
+}
+module.exports.watchStylus = watchStylus;
 
 function getVendors(pathToPackage, exclude)
 {

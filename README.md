@@ -30,6 +30,28 @@ wu.compileLess(options, cb)
  */
 wu.watchLess(options)
 
+/**
+ * Compiles Stylus files to css
+ *
+ * @param Object options
+ * @param Function cb
+ *
+ * Options:
+ *
+ * - Array src - List of glob patterns for source files
+ * - String dest - Destination directory
+ * - Boolean debug - if true source maps will be generated
+ * - plugins - list of plugins to use (plugin constructors must be insterted executed here)
+ */
+wu.compileStylus(options, cb)
+
+/**
+ * Watches and recompiles Stylus files
+ * @param Object options
+ *
+ * See compileStylus for available Options
+ */
+wu.watchStylus(options)
 
 /**
  * Compiles javascript with browserify
