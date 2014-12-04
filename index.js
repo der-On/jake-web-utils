@@ -288,6 +288,7 @@ function createBrowserifyBundles(options)
  * - String vendorDest - Destination file for compiled vendors
  * - Boolean debug - if true source maps will be created
  * - String baseDir - baseDir as in browserify options
+ * - String package - path to package.json to use for vendor detection
  */
 function compileBrowserify(options, cb)
 {
