@@ -1,6 +1,6 @@
 {
   "name": "jake-web-utils",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Web(App) utilities for the Jake task runner.",
   "main": "index.js",
   "scripts": {
