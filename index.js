@@ -102,7 +102,13 @@ module.exports.compileLess = compileLess;
  */
 function watchLess(options)
 {
-  var g = new gaze(options.src);
+  // make src paths relative as gaze has problems with absolute patsh
+  var cwd = process.cwd();
+  var src = options.src.map(function(src) {
+    return path.relative(cwd, src);
+  });
+
+  var g = new gaze(src);
   g.on('all', cb);
   cb();
 
@@ -204,7 +210,13 @@ module.exports.compileStylus = compileStylus;
  */
 function watchStylus(options)
 {
-  var g = new gaze(options.src);
+  // make src paths relative as gaze has problems with absolute patsh
+  var cwd = process.cwd();
+  var src = options.src.map(function(src) {
+    return path.relative(cwd, src);
+  });
+
+  var g = new gaze(src);
   g.on('all', cb);
   cb();
 
