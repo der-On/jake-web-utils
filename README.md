@@ -62,6 +62,7 @@ wu.watchStylus(options)
  *
  * - Array src - List of glob patterns for source files
  * - String dest - Destination file
+ * - Boolean noVendors - if true, no separate vendors file will be used
  * - Array vendorSrc - List of glob pattern for source files of vendor modules
  * - String vendorDest - Destination file for compiled vendors
  * - Boolean debug - if true source maps will be created

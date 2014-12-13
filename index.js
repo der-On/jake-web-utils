@@ -256,8 +256,6 @@ function writeBrowserifyBundle(b, dest, cb)
 
 function createBrowserifyBundles(options)
 {
-  var vendors = getVendors(options.package || './package.json', options.vendorExclude);
-
   var opts = {
     cache: {},
     packageCache: {},
@@ -271,18 +269,21 @@ function createBrowserifyBundles(options)
     opts
   );
 
-  appBundle.external(vendors);
-
-  var vendorsBundle = browserify(
-    options.vendorSrc,
-    opts
-  );
-
-  vendorsBundle.require(vendors);
-
   var bundles = {};
   bundles[options.dest] = appBundle;
-  bundles[options.vendorDest] = vendorsBundle;
+
+  if (!options.noVendors) {
+    var vendors = getVendors(options.package || path.join(process.cwd(), 'package.json'), options.vendorExclude);
+    appBundle.external(vendors);
+
+    var vendorsBundle = browserify(
+        options.vendorSrc,
+        opts
+    );
+
+    vendorsBundle.require(vendors);
+    bundles[options.vendorDest] = vendorsBundle;
+  }
 
   return bundles;
 }
@@ -296,6 +297,7 @@ function createBrowserifyBundles(options)
  *
  * - Array src - List of glob patterns for source files
  * - String dest - Destination file
+ * - Boolean noVendors - if true, no separate vendors file will be used
  * - Array vendorSrc - List of glob pattern for source files of vendor modules
  * - String vendorDest - Destination file for compiled vendors
  * - Boolean debug - if true source maps will be created
