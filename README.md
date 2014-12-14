@@ -27,6 +27,10 @@ wu.compileLess(options, cb)
  * @param Object options
  *
  * See compileLess for available Options
+ *
+ * Options:
+ *
+ * - Array watchPaths - Additional paths/glob patterns to watch
  */
 wu.watchLess(options)
 
@@ -50,6 +54,10 @@ wu.compileStylus(options, cb)
  * @param Object options
  *
  * See compileStylus for available Options
+ *
+ * Options:
+ *
+ * - Array watchPaths - Additional paths/glob patterns to watch
  */
 wu.watchStylus(options)
 

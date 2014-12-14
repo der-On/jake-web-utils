@@ -99,12 +99,17 @@ module.exports.compileLess = compileLess;
  * @param Object options
  *
  * See compileLess for available Options
+ *
+ * Options:
+ *
+ * - Array watchPaths - Additional paths/glob patterns to watch
  */
 function watchLess(options)
 {
   // make src paths relative as gaze has problems with absolute patsh
   var cwd = process.cwd();
-  var src = options.src.map(function(src) {
+  var src = options.src.concat(options.watchPaths || []);
+  var src = src.map(function(src) {
     return path.relative(cwd, src);
   });
 
@@ -207,12 +212,17 @@ module.exports.compileStylus = compileStylus;
  * @param Object options
  *
  * See compileStylus for available Options
+ *
+ * Options:
+ *
+ * - Array watchPaths - Additional paths/glob patterns to watch
  */
 function watchStylus(options)
 {
-  // make src paths relative as gaze has problems with absolute patsh
+  // make src paths relative as gaze has problems with absolute paths
   var cwd = process.cwd();
-  var src = options.src.map(function(src) {
+  var src = options.src.concat(options.watchPaths || []);
+  var src = src.map(function(src) {
     return path.relative(cwd, src);
   });
 
