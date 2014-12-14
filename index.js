@@ -138,19 +138,19 @@ function compileStylus(options, cb)
   var dest = options.dest;
   var plugins = options.plugins || [];
 
-  var lessFiles = new jake.FileList();
-  lessFiles.include(src);
+  var stylusFiles = new jake.FileList();
+  stylusFiles.include(src);
 
   var done = 0;
 
-  lessFiles.toArray().forEach(function(file) {
+  stylusFiles.toArray().forEach(function(file) {
     var destFile = path.join(dest, path.basename(file).replace('.styl', '.css'));
 
     // remove existing css
     jake.rmRf(destFile, {silent: true});
 
     console.log('Writing css to ' + destFile);
-    var s = stylus(fs.readFileSync(file, 'utf8'));
+    var s = stylus(fs.readFileSync(file, 'utf8'), { filename: file });
     plugins.forEach(function(plugin) {
       s.use(plugin);
     });
@@ -167,13 +167,13 @@ function compileStylus(options, cb)
     }
     else {
       if (!options.debug) {
-        fs.writeFile(dest, css.css, 'utf8', onDone);
+        fs.writeFile(dest, css, 'utf8', onDone);
         return;
       }
 
       var s = new stream.Readable();
       s._read = noop;
-      s.push(css.css);
+      s.push(css);
       s.push(null);
 
       var smap = new stream.Duplex();
@@ -195,7 +195,7 @@ function compileStylus(options, cb)
   {
     done++;
 
-    if (done === lessFiles.length) {
+    if (done === stylusFiles.length) {
       cb(null);
     }
   }
