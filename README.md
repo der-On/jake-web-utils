@@ -73,6 +73,8 @@ wu.watchStylus(options)
  * - Boolean noVendors - if true, no separate vendors file will be used
  * - Array vendorSrc - List of glob pattern for source files of vendor modules
  * - String vendorDest - Destination file for compiled vendors
+ * - Array vendorExclude - Module names to exlclude from vendors
+ * - Array vendorInclude - Module names to include from vendors (ignores vendorExclude)
  * - Boolean debug - if true source maps will be created
  * - String baseDir - baseDir as in browserify options
  * - String package - path to package.json to use for vendor detection
