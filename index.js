@@ -293,7 +293,7 @@ function createBrowserifyBundles(options)
     appBundle.external(vendors);
 
     var vendorsBundle = browserify(
-        options.vendorSrc,
+        options.vendorSrc || path.join(__dirname, 'vendors.js'),
         opts
     );
 

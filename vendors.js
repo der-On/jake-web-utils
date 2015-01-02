@@ -1,0 +1,1 @@
+/* This is the default browserify vendors file, used if no vendorSrc is provided in browserify options. */
