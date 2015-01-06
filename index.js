@@ -289,6 +289,8 @@ function createBrowserifyBundles(options)
   bundles[options.dest] = appBundle;
 
   if (!options.noVendors) {
+    if (!options.vendorDest) fail('Missing "vendorDest" option. If you do not want a seperate vendors file use the "noVendors" option.');
+
     var vendors = getVendors(options.package || path.join(process.cwd(), 'package.json'), options.vendorExclude, options.vendorInclude);
     appBundle.external(vendors);
 
