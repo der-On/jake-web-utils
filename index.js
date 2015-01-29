@@ -280,6 +280,25 @@ function createBrowserifyBundles(options)
     debug: (typeof options.debug !== 'undefined') ? options.debug : true
   };
 
+  var reservedOpts = [
+    'src',
+    'dest',
+    'vendorSrc',
+    'vendorDest',
+    'vendorInclude',
+    'noVendors',
+    'baseDir',
+    'package',
+    'debug'
+  ];
+
+  // copy all other options
+  Object.keys(options).forEach(function(key) {
+    if (reservedOpts.indexOf(key) === -1) {
+      opts[key] = options[key];
+    }
+  });
+
   var appBundle = browserify(
     options.src,
     opts
