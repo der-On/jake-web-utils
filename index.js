@@ -161,7 +161,7 @@ function compileStylus(options, cb)
     });
 
     s.render(
-      onRendered.bind(null, destFile)
+        onRendered.bind(null, destFile)
     );
   });
 
@@ -300,9 +300,15 @@ function createBrowserifyBundles(options)
   });
 
   var appBundle = browserify(
-    options.src,
-    opts
+      options.src,
+      opts
   );
+
+  if (options.transforms) {
+    options.transforms.forEach(function(transform) {
+      appBundle.transform(transform);
+    })
+  }
 
   var bundles = {};
   bundles[options.dest] = appBundle;
@@ -342,6 +348,7 @@ function createBrowserifyBundles(options)
  * - Boolean debug - if true source maps will be created
  * - String baseDir - baseDir as in browserify options
  * - String package - path to package.json to use for vendor detection
+ * - Array transforms - list of transforms
  */
 function compileBrowserify(options, cb)
 {
