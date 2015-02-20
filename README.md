@@ -90,4 +90,12 @@ wu.compileBrowserify(options, cb)
  * See compileBrowserify for available Options
  */
 wu.watchBrowserify(options)
+
+
+/**
+ * Watches one or more paths for changes
+ * @param src {String|Array}
+ * @param cb {Function}
+ */
+wu.watch(src, cb)
 ```

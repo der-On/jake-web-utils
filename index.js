@@ -386,3 +386,15 @@ function watchBrowserify(options)
   });
 }
 module.exports.watchBrowserify = watchBrowserify;
+
+/**
+ * Watches one or more paths for changes
+ * @param src {String|Array}
+ * @param cb {Function}
+ */
+function watch(src, cb)
+{
+  var g = new gaze(src);
+  g.on('all', cb);
+}
+module.exports.watch = watch;
