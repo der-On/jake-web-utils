@@ -35,7 +35,8 @@ function compileLess(options, cb)
 
   var done = 0;
 
-  lessFiles.toArray().forEach(function(file) {
+  lessFiles = lessFiles.toArray();
+  lessFiles.forEach(function(file) {
     var destFile = path.join(dest, path.basename(file).replace('.less', '.css'));
 
     // remove existing css
@@ -148,7 +149,8 @@ function compileStylus(options, cb)
 
   var done = 0;
 
-  stylusFiles.toArray().forEach(function(file) {
+  stylusFiles = stylusFiles.toArray();
+  stylusFiles.forEach(function(file) {
     var destFile = path.join(dest, path.basename(file).replace('.styl', '.css'));
 
     // remove existing css
