@@ -325,7 +325,7 @@ function createBrowserifyBundles(options)
   if (!options.noVendors) {
     var vendorsBundle = browserify(
         options.vendorSrc || path.join(__dirname, 'vendors.js'),
-        vendorOpts
+        opts
     );
 
     vendorsBundle.require(vendors);
