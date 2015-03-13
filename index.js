@@ -315,15 +315,17 @@ function createBrowserifyBundles(options)
   var bundles = {};
   bundles[options.dest] = appBundle;
 
-  if (!options.noVendors) {
-    if (!options.vendorDest) fail('Missing "vendorDest" option. If you do not want a seperate vendors file use the "noVendors" option.');
+  if (!options.noVendors && !options.vendorDest) fail('Missing "vendorDest" option. If you do not want a seperate vendors file use the "noVendors" option.');
 
+  if (options.vendorExclude || options.vendorInclude) {
     var vendors = getVendors(options.package || path.join(process.cwd(), 'package.json'), options.vendorExclude, options.vendorInclude);
     appBundle.external(vendors);
+  }
 
+  if (!options.noVendors) {
     var vendorsBundle = browserify(
         options.vendorSrc || path.join(__dirname, 'vendors.js'),
-        opts
+        vendorOpts
     );
 
     vendorsBundle.require(vendors);
