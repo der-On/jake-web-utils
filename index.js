@@ -35,8 +35,12 @@ function compileLess(options, cb)
 
   var done = 0;
 
+  var fileCb = (typeof options.dest === 'function') ? toCb(options.dest) : toFile;
+
   lessFiles = lessFiles.toArray();
-  lessFiles.forEach(function(file) {
+  lessFiles.forEach(fileCb);
+
+  function toFile(file) {
     var destFile = path.join(dest, path.basename(file).replace('.less', '.css'));
 
     // remove existing css
@@ -51,7 +55,20 @@ function compileLess(options, cb)
         },
         onRendered.bind(null, destFile)
     );
-  });
+  }
+
+  function toCb(cb) {
+    return function(file) {
+      less.render(
+        fs.readFileSync(file, 'utf8'),
+        {
+          paths: src.map(function(_src) { return path.dirname(_src); }),
+          sourceMap: true
+        },
+        cb
+      );
+    };
+  }
 
   function onRendered(dest, error, css) {
     if (error) {
@@ -149,8 +166,23 @@ function compileStylus(options, cb)
 
   var done = 0;
 
+  var fileCb = (typeof options.dest === 'function') ? toCb(options.dest) : toFile;
+
   stylusFiles = stylusFiles.toArray();
-  stylusFiles.forEach(function(file) {
+  stylusFiles.forEach(fileCb);
+
+  function toCb(cb) {
+    return function(file) {
+      var s = stylus(fs.readFileSync(file, 'utf8'), { filename: file });
+      plugins.forEach(function(plugin) {
+        s.use(plugin);
+      });
+
+      s.render(cb);
+    };
+  }
+
+  function toFile(file) {
     var destFile = path.join(dest, path.basename(file).replace('.styl', '.css'));
 
     // remove existing css
@@ -165,7 +197,7 @@ function compileStylus(options, cb)
     s.render(
         onRendered.bind(null, destFile)
     );
-  });
+  }
 
   function onRendered(dest, error, css) {
     if (error) {
@@ -259,13 +291,17 @@ function writeBrowserifyBundle(b, dest, cb)
 {
   if (typeof cb !== 'function') cb = noop;
 
-  console.log('Writing bundle to ' + dest);
-  b.bundle(onBundle)
-      .pipe(exorcist(dest + '.map'))
-      .pipe(fs.createWriteStream(dest, 'utf8'))
-      .on('finish', cb);
+  if (typeof dest === 'function') {
+    b.bundle(dest);
+  } else {
+    console.log('Writing bundle to ' + dest);
+    b.bundle(onBundle)
+     .pipe(exorcist(dest + '.map'))
+     .pipe(fs.createWriteStream(dest, 'utf8'))
+     .on('finish', cb);
+  }
 
-  function onBundle(error) {
+  function onBundle(error, data) {
     if (error) {
       console.error(error);
     }
@@ -312,8 +348,11 @@ function createBrowserifyBundles(options)
     })
   }
 
-  var bundles = {};
-  bundles[options.dest] = appBundle;
+  var bundles = [];
+  bundles.push({
+    bundle: appBundle,
+    dest: options.dest
+  });
 
   if (!options.noVendors && !options.vendorDest) fail('Missing "vendorDest" option. If you do not want a seperate vendors file use the "noVendors" option.');
 
@@ -329,7 +368,10 @@ function createBrowserifyBundles(options)
     );
 
     vendorsBundle.require(vendors);
-    bundles[options.vendorDest] = vendorsBundle;
+    bundles.push({
+      bundle: vendorsBundle,
+      dest: options.vendorDest
+    });
   }
 
   return bundles;
@@ -359,8 +401,10 @@ function compileBrowserify(options, cb)
   var bundles = createBrowserifyBundles(options);
   var done = 0;
   var num = Object.keys(bundles).length;
-  Object.keys(bundles).forEach(function(dest) {
-    writeBrowserifyBundle(bundles[dest], dest, onBundled);
+  bundles.forEach(function(b) {
+    var dest = b.dest;
+    var bundle = b.bundle;
+    writeBrowserifyBundle(bundle, dest, onBundled);
   });
 
   function onBundled() {
@@ -382,9 +426,10 @@ module.exports.compileBrowserify = compileBrowserify;
 function watchBrowserify(options)
 {
   var bundles = createBrowserifyBundles(options);
-  Object.keys(bundles).forEach(function(dest) {
-    bundles[dest] = watchify(bundles[dest]);
-    var bundle = bundles[dest];
+  bundles.forEach(function(b) {
+    var dest = b.dest;
+    b.bundle = watchify(b.bundle);
+    var bundle = b.bundle;
     writeBrowserifyBundle(bundle, dest, noop);
     bundle.on('update', writeBrowserifyBundle.bind(null, bundle, dest));
   });

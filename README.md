@@ -16,7 +16,7 @@ var wu = require('jake-web-utils');
  * Options:
  *
  * - Array src - List of glob patterns for source files
- * - String dest - Destination directory
+ * - String dest - Destination directory or a callback function
  * - Boolean debug - if true source maps will be generated
  */
 wu.compileLess(options, cb)
@@ -43,7 +43,7 @@ wu.watchLess(options)
  * Options:
  *
  * - Array src - List of glob patterns for source files
- * - String dest - Destination directory
+ * - String dest - Destination directory or a callback function
  * - Boolean debug - if true source maps will be generated
  * - plugins - list of plugins to use (plugin constructors must be insterted executed here)
  */
@@ -69,7 +69,7 @@ wu.watchStylus(options)
  * Options:
  *
  * - Array src - List of glob patterns for source files
- * - String dest - Destination file
+ * - String dest - Destination file or a callback function
  * - Boolean noVendors - if true, no separate vendors file will be used
  * - Array vendorSrc - List of glob pattern for source files of vendor modules
  * - String vendorDest - Destination file for compiled vendors
