@@ -324,6 +324,7 @@ function createBrowserifyBundles(options)
     'vendorSrc',
     'vendorDest',
     'vendorInclude',
+    'vendorExclude',
     'noVendors',
     'baseDir',
     'package',
