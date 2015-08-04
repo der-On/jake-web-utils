@@ -299,14 +299,19 @@ function writeBrowserifyBundle(b, dest, cb)
     cb.apply(null, arguments);
   }
 
+  function onError(err) {
+    console.error(error);
+  }
+
   if (typeof dest === 'function') {
     b.bundle(dest);
   } else {
     console.log('Writing bundle to ' + dest);
     b.bundle()
-     .pipe(exorcist(dest + '.map'))
-     .pipe(fs.createWriteStream(dest, 'utf8'))
-     .on('finish', onBundle);
+      .on('error', onError)
+      .pipe(exorcist(dest + '.map'))
+      .pipe(fs.createWriteStream(dest, 'utf8'))
+      .on('finish', onBundle);
   }
 }
 
