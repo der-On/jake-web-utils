@@ -291,20 +291,22 @@ function writeBrowserifyBundle(b, dest, cb)
 {
   if (typeof cb !== 'function') cb = noop;
 
-  if (typeof dest === 'function') {
-    b.bundle(dest);
-  } else {
-    console.log('Writing bundle to ' + dest);
-    b.bundle(onBundle)
-     .pipe(exorcist(dest + '.map'))
-     .pipe(fs.createWriteStream(dest, 'utf8'))
-     .on('finish', cb);
-  }
-
   function onBundle(error, data) {
     if (error) {
       console.error(error);
     }
+
+    cb.apply(null, arguments);
+  }
+
+  if (typeof dest === 'function') {
+    b.bundle(dest);
+  } else {
+    console.log('Writing bundle to ' + dest);
+    b.bundle()
+     .pipe(exorcist(dest + '.map'))
+     .pipe(fs.createWriteStream(dest, 'utf8'))
+     .on('finish', onBundle);
   }
 }
 
