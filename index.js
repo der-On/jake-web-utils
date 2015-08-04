@@ -299,7 +299,7 @@ function writeBrowserifyBundle(b, dest, cb)
     cb.apply(null, arguments);
   }
 
-  function onError(err) {
+  function onError(error) {
     console.error(error);
   }
 
